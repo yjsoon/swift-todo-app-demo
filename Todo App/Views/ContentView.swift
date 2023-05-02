@@ -11,6 +11,7 @@ struct ContentView: View {
     
     @StateObject var todoManager = TodoManager()
     @State private var showSheet = false
+    @State private var showConfirmAlert = false
     
     var body: some View {
         NavigationStack {
@@ -24,7 +25,16 @@ struct ContentView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     EditButton()
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    
+                    #if DEBUG
+                    Button {
+                        showConfirmAlert = true
+                    } label: {
+                        Image(systemName: "clipboard")
+                    }
+                    #endif
+                    
                     Button {
                         showSheet = true
                     } label: {
@@ -35,6 +45,11 @@ struct ContentView: View {
             .sheet(isPresented: $showSheet) {
                 NewTodoView(sourceArray: $todoManager.todos)
                     .presentationDetents([.medium])
+            }
+            .alert("Load sample data? Warning: All existing data will be deleted.", isPresented: $showConfirmAlert) {
+                Button("Replace", role: .destructive) {
+                    todoManager.loadSampleData()
+                }
             }
         }
     }

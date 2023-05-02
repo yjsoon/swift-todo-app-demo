@@ -19,6 +19,10 @@ class TodoManager: ObservableObject {
         load()
     }
     
+    func loadSampleData() {
+        todos = Todo.sampleTodos
+    }
+    
     func getArchiveURL() -> URL {
         let plistName = "todos.plist"
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -35,6 +39,7 @@ class TodoManager: ObservableObject {
     
     func load() {
         let archiveURL = getArchiveURL()
+        print(archiveURL)
         let propertyListDecoder = PropertyListDecoder()
                 
         if let retrievedTodoData = try? Data(contentsOf: archiveURL),
